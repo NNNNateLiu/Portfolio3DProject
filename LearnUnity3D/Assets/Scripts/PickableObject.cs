@@ -3,6 +3,7 @@ using UnityEngine;
 public class PickableObject : MonoBehaviour
 {
     public GameObject uiPrompt; // 在 Inspector 中拖入你的 UI 面板或 Text
+    public Sprite itemUIImage;
 
     private void Start()
     {
@@ -15,6 +16,8 @@ public class PickableObject : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             if (uiPrompt != null) uiPrompt.SetActive(true);
+            other.GetComponent<PlayerInteraction>().canInteract = true;
+            other.GetComponent<PlayerInteraction>().currentInteractingObject = this.gameObject;
             Debug.Log("Player Enter");
         }
     }
@@ -25,6 +28,8 @@ public class PickableObject : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             if (uiPrompt != null) uiPrompt.SetActive(false);
+            other.GetComponent<PlayerInteraction>().canInteract = false;
+            other.GetComponent<PlayerInteraction>().currentInteractingObject = null;
             Debug.Log("Player Exit");
         }
     }
