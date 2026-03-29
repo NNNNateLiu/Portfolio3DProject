@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
+/*
 public class PlayerInteraction : MonoBehaviour
 {
     public bool canInteract = false;
@@ -63,6 +64,121 @@ public class PlayerInteraction : MonoBehaviour
         else
         {
             //Time.timeScale = 0;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+}
+*/
+public class PlayerInteraction : MonoBehaviour
+{
+    public List<GameObject> interactableObjects = new List<GameObject>();
+    public GameObject currentInteractingObject;
+
+    public BackpackUI backpackUI;
+
+    void Update()
+    {
+        UpdateCurrentObject();
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (currentInteractingObject == null)
+            {
+                Debug.Log("there is nothing to be picked up");
+                return;
+            }
+
+            InteractWithObject();
+        }
+    }
+
+    // ===== 核心：动态选择最近物体 =====
+    void UpdateCurrentObject()
+    {
+        float minDistance = float.MaxValue;
+        GameObject closest = null;
+
+        foreach (GameObject obj in interactableObjects)
+        {
+            if (obj == null) continue;
+
+            float dist = Vector3.Distance(transform.position, obj.transform.position);
+
+            if (dist < minDistance)
+            {
+                minDistance = dist;
+                closest = obj;
+            }
+        }
+
+        currentInteractingObject = closest;
+    }
+
+    void InteractWithObject()
+    {
+        if (currentInteractingObject == null) return;
+
+        PickableObject pickable = currentInteractingObject.GetComponent<PickableObject>();
+        ReadableObject readable = currentInteractingObject.GetComponent<ReadableObject>();
+
+        if (pickable != null)
+        {
+            for (int i = 0; i < backpackUI.itemSlots.Count; i++)
+            {
+                Image img = backpackUI.itemSlots[i].GetComponent<Image>();
+
+                if (img.sprite == null)
+                {
+                    img.sprite = pickable.itemUIImage;
+
+                    // 从列表移除
+                    interactableObjects.Remove(currentInteractingObject);
+
+                    Destroy(currentInteractingObject);
+
+                    currentInteractingObject = null;
+
+                    return;
+                }
+            }
+        }
+
+        if (readable != null)
+        {
+            readable.uiReadableContent.SetActive(true);
+            SetCursorState(false);
+        }
+    }
+
+    // ===== 触发器维护列表 =====
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<PickableObject>() != null ||
+            other.GetComponent<ReadableObject>() != null)
+        {
+            if (!interactableObjects.Contains(other.gameObject))
+                interactableObjects.Add(other.gameObject);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (interactableObjects.Contains(other.gameObject))
+        {
+            interactableObjects.Remove(other.gameObject);
+        }
+    }
+
+    public void SetCursorState(bool newState)
+    {
+        if (newState)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
