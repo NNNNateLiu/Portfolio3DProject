@@ -93,7 +93,7 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    // ===== ºËÐÄ£º¶¯Ì¬Ñ¡Ôñ×î½üÎïÌå =====
+    // ===== ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Ì¬Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ =====
     void UpdateCurrentObject()
     {
         float minDistance = float.MaxValue;
@@ -121,7 +121,9 @@ public class PlayerInteraction : MonoBehaviour
 
         PickableObject pickable = currentInteractingObject.GetComponent<PickableObject>();
         ReadableObject readable = currentInteractingObject.GetComponent<ReadableObject>();
+        SpecialObject special = currentInteractingObject.GetComponent<SpecialObject>();
 
+        //handle pickable object interact event
         if (pickable != null)
         {
             for (int i = 0; i < backpackUI.itemSlots.Count; i++)
@@ -131,8 +133,10 @@ public class PlayerInteraction : MonoBehaviour
                 if (img.sprite == null)
                 {
                     img.sprite = pickable.itemUIImage;
+                    backpackUI.itemNames[i] = pickable.itemName;
+                    
 
-                    // ´ÓÁÐ±íÒÆ³ý
+                    // ï¿½ï¿½ï¿½Ð±ï¿½ï¿½Æ³ï¿½
                     interactableObjects.Remove(currentInteractingObject);
 
                     Destroy(currentInteractingObject);
@@ -144,18 +148,26 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
+        //handle readable object interact event
         if (readable != null)
         {
             readable.uiReadableContent.SetActive(true);
             SetCursorState(false);
         }
+        
+        //handle special object interact event
+        if (special != null)
+        {
+            special.specialObjectInteractEvent(backpackUI);
+        }
     }
 
-    // ===== ´¥·¢Æ÷Î¬»¤ÁÐ±í =====
+    // ===== ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½ï¿½Ð±ï¿½ =====
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<PickableObject>() != null ||
-            other.GetComponent<ReadableObject>() != null)
+            other.GetComponent<ReadableObject>() != null ||
+            other.GetComponent<SpecialObject>() != null)
         {
             if (!interactableObjects.Contains(other.gameObject))
                 interactableObjects.Add(other.gameObject);

@@ -11,7 +11,7 @@ public class NPCBehavior : MonoBehaviour
 
     private void Update()
     {
-        Invoke("MovetoTarget",4f);
+        //Invoke("MovetoTarget",4f);
 
         if (gameObject.GetComponent<NavMeshAgent>().velocity.magnitude > 0)
         {
@@ -23,7 +23,7 @@ public class NPCBehavior : MonoBehaviour
         }
     }
 
-    private void MovetoTarget()
+    public void MovetoTarget()
     {
         gameObject.GetComponent<NavMeshAgent>().SetDestination(tagetPosition.transform.position);
     }

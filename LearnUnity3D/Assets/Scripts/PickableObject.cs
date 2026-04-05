@@ -41,6 +41,7 @@ public class PickableObject : MonoBehaviour
 {
     public GameObject uiPrompt; // 在 Inspector 中拖入你的 UI 面板或 Text
     public Sprite itemUIImage;
+    public string itemName;
 
     private void Start()
     {
