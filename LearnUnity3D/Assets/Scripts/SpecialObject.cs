@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,8 @@ public class SpecialObject : MonoBehaviour
     public GameObject uiPrompt; // 在 Inspector 中拖入你的 UI 面板或 Text
     public string requiredItemName;
     public GameObject additionalSpecialObject;
+
+    private GameObject player;
 
     private void Start()
     {
@@ -25,6 +28,8 @@ public class SpecialObject : MonoBehaviour
             {
                 pi.interactableObjects.Add(this.gameObject);
             }
+            
+            player = other.gameObject;
 
             Debug.Log("Player Enter");
         }
@@ -75,6 +80,25 @@ public class SpecialObject : MonoBehaviour
         {
             case "Torch":
                 additionalSpecialObject.GetComponent<Special_TorchStrawPile>().additionalTriggerEvent();
+                player.GetComponent<Animator>().SetTrigger("TorchStrawPile");
+                Destroy(gameObject);
+                break;
+            
+            case"Meat":
+                additionalSpecialObject.GetComponent<Special_MeatDipPoison>().additionalTriggerEvent();
+                player.GetComponent<Animator>().SetTrigger("DipMeat");
+                Destroy(gameObject);
+                break;
+            
+            case"Hook":
+                additionalSpecialObject.GetComponent<Special_HangHook>().additionalTriggerEvent();
+                player.GetComponent<Animator>().SetTrigger("Hang");
+                Destroy(gameObject);
+                break;
+            
+            case"Rope":
+                additionalSpecialObject.GetComponent<Special_HangRope>().additionalTriggerEvent();
+                player.GetComponent<Animator>().SetTrigger("Hang");
                 Destroy(gameObject);
                 break;
             
