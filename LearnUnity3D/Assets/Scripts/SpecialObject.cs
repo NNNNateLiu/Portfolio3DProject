@@ -102,6 +102,12 @@ public class SpecialObject : MonoBehaviour
                 Destroy(gameObject);
                 break;
             
+            case"PoisonedMeat":
+                additionalSpecialObject.GetComponent<Special_Dog>().additionalTriggerEvent();
+                player.GetComponent<Animator>().SetTrigger("Hang");
+                Destroy(gameObject);
+                break;
+            
             default:
                 break;
         }
