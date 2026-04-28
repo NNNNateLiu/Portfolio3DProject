@@ -62,7 +62,7 @@ public class SpecialObject : MonoBehaviour
             if (backpackUI.itemNames[i] == requiredItemName)
             {
                 Debug.Log("Special Object Interacted, item removed");
-                backpackUI.itemNames.Remove(backpackUI.itemNames[i]);
+                backpackUI.itemNames[i] = null;
                 backpackUI.itemSlots[i].GetComponent<Image>().sprite = null;
                 triggerAdditionalEvent();
                 break;
